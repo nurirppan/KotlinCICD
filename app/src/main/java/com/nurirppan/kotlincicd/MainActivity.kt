@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.calculateButton.setOnClickListener {
             // Crashes.generateTestCrash()
+            // test 
             try {
                 val interestRate = binding.interestEditText.text.toString().toFloat()
                 val currentAge = binding.ageEditText.text.toString().toInt()
