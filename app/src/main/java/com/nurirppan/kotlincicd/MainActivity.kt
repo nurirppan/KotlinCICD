@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } catch(ex: Exception){
                 Analytics.trackEvent(ex.message)
+                // test
             }
         }
     }
