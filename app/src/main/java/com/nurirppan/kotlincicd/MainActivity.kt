@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        AppCenter.start(application, "55b80ff8-9bd9-4145-b54c-c51293ff0ac8", Analytics::class.java, Crashes::class.java)
+        AppCenter.start(application, "05e54d42-8261-4ebc-80fc-4fcd479d878b", Analytics::class.java, Crashes::class.java)
 
 //        binding.tvHelloWord.setOnClickListener {
 //            //Crashes.generateTestCrash()
