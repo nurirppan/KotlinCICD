@@ -7,6 +7,7 @@ import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import com.nurirppan.kotlincicd.databinding.ActivityMainBinding
 import java.lang.Exception
+import kotlin.math.pow
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,17 +18,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        AppCenter.start(application, "05e54d42-8261-4ebc-80fc-4fcd479d878b", Analytics::class.java, Crashes::class.java)
-
-//        binding.tvHelloWord.setOnClickListener {
-//            //Crashes.generateTestCrash()
-//            Analytics.trackEvent("Test Track Event")
-//        }
+      
+      AppCenter.start(application, "05e54d42-8261-4ebc-80fc-4fcd479d878b", Analytics::class.java, Crashes::class.java)
 
         binding.calculateButton.setOnClickListener {
             // Crashes.generateTestCrash()
-            // test 
             try {
                 val interestRate = binding.interestEditText.text.toString().toFloat()
                 val currentAge = binding.ageEditText.text.toString().toInt()
@@ -35,7 +30,7 @@ class MainActivity : AppCompatActivity() {
                 val monthly = binding.monthlySavingsEditText.text.toString().toFloat()
                 val current = binding.currentEditText.text.toString().toFloat()
 
-                val properties:HashMap<String, String> = HashMap<String, String>()
+                val properties: HashMap<String, String> = HashMap<String, String>()
                 properties.put("interest_rate", interestRate.toString())
                 properties.put("current_age", currentAge.toString())
                 properties.put("retirement_age", retirementAge.toString())
@@ -48,10 +43,37 @@ class MainActivity : AppCompatActivity() {
                 if (retirementAge <= currentAge) {
                     Analytics.trackEvent("wrong_age", properties)
                 }
-            } catch(ex: Exception){
+
+                val futureSavings = calculateRetirement(
+                    interestRate,
+                    current,
+                    monthly,
+                    (retirementAge - currentAge) * 12
+                )
+
+                binding.resultTextView.text =
+                    "At the current rate of $interestRate%, saving \$$monthly a month you will have \$${String.format(
+                        "%f",
+                        futureSavings
+                    )} by $retirementAge."
+            } catch (ex: Exception) {
                 Analytics.trackEvent(ex.message)
-                // test 2
             }
         }
+    }
+
+    fun calculateRetirement(
+        interestRate: Float,
+        currentSavings: Float,
+        monthly: Float,
+        numMonths: Int
+    ): Float {
+        var futureSavings = currentSavings * (1 + (interestRate / 100 / 12)).pow(numMonths)
+
+        for (i in 1..numMonths) {
+            futureSavings += monthly * (1 + (interestRate / 100 / 12)).pow(i)
+        }
+
+        return futureSavings
     }
 }
